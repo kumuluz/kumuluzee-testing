@@ -100,7 +100,9 @@ should be used when constructing the deployment (e.g. `JavaArchive#addAsManifest
 etc.). The KumuluzEE Adapter will take care to convert and export the deployment in a format, recognised by the
 KumuluzEE Server.
 
-More examples like the one above can be found in the [test](TODO) folder of this project.
+More examples like the one above can be found in the
+[test](https://github.com/kumuluz/kumuluzee-testing/tree/master/kumuluzee-arquillian-container/src/test/java/com/kumuluz/ee/testing/arquillian)
+folder of this project.
 
 ### Configuring Arquillian Container Adapter
 

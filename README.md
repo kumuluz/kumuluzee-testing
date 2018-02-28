@@ -5,6 +5,12 @@
 
 ## Usage
 
+The following tools are available:
+
+- [KumuluzEE Arquillian Container Adapter](https://github.com/kumuluz/kumuluzee-testing/tree/master/kumuluzee-arquillian-container) -
+  KumuluzEE Arquillian Container Adapter starts the KumuluzEE server before
+  running the tests, which enables the tests to interact with the environment closely resembling the one in production.
+
 ## Changelog
 
 Recent changes can be viewed on Github on the [Releases Page](https://github.com/kumuluz/kumuluzee-testing/releases)
