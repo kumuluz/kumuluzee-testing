@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Created-By: KumuluzEE Arquillian Container
+Main-Class: com.kumuluz.ee.loader.EeBootLoader

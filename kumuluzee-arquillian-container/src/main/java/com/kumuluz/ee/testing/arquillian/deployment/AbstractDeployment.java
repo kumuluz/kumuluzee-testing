@@ -1,0 +1,163 @@
+package com.kumuluz.ee.testing.arquillian.deployment;
+
+import com.kumuluz.ee.testing.arquillian.KumuluzEEContainerConfig;
+import com.kumuluz.ee.testing.arquillian.utils.OutputProcessor;
+import org.jboss.arquillian.container.spi.client.container.DeploymentException;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
+import org.jboss.shrinkwrap.api.Archive;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+public abstract class AbstractDeployment {
+
+    private KumuluzEEContainerConfig containerConfig;
+
+    protected boolean shouldDelete;
+
+    protected static final String TMP_DIR = "KumuluzEEArquillian";
+
+    protected Path tmpDir;
+    protected Archive<?> archive;
+
+    private Process process;
+
+    public AbstractDeployment(Archive<?> archive) {
+        this.archive = archive;
+        this.containerConfig = KumuluzEEContainerConfig.getInstance();
+        this.shouldDelete = this.containerConfig.shouldDeleteTemporaryFiles();
+    }
+
+    public void init() throws DeploymentException {
+        try {
+            Path tmpDirParent = Paths.get(System.getProperty("java.io.tmpdir"), TMP_DIR);
+            Files.createDirectories(tmpDirParent);
+
+            chmod777(tmpDirParent.toFile());
+
+            tmpDir = Files.createTempDirectory(tmpDirParent, null);
+            chmod777(tmpDir.toFile());
+
+            if (shouldDelete) {
+                tmpDir.toFile().deleteOnExit();
+            }
+        } catch (IOException e) {
+            throw new DeploymentException("Could not create temporary folder", e);
+        }
+
+        exportArchive();
+    }
+
+    protected abstract void exportArchive() throws DeploymentException;
+
+    protected abstract List<String> createArguments();
+
+    public HTTPContext start() throws DeploymentException {
+
+        List<String> arguments = new ArrayList<>();
+        arguments.add(javaPath().toString());
+        arguments.addAll(createArguments());
+
+        try {
+            process = new ProcessBuilder().directory(tmpDir.toFile()).command(arguments).start();
+
+            CountDownLatch serverReady = new CountDownLatch(1);
+
+            OutputProcessor stdoutProcessor = new OutputProcessor(process.getInputStream(), serverReady);
+            OutputProcessor stderrProcessor = new OutputProcessor(process.getErrorStream(), serverReady);
+            Thread outThread = new Thread(stdoutProcessor);
+            Thread errThread = new Thread(stderrProcessor);
+
+            outThread.start();
+            errThread.start();
+
+            boolean isReady;
+            try {
+                isReady = serverReady.await(containerConfig.getContainerStartTimeoutMs(), TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                isReady = false;
+            }
+
+            if (!isReady) {
+                throw new DeploymentException("Deployment failed to start in time");
+            }
+
+            if (stdoutProcessor.getError() != null) {
+                throw new DeploymentException("Error while processing server stdout", stdoutProcessor.getError());
+            }
+            if (stderrProcessor.getError() != null) {
+                throw new DeploymentException("Error while processing server stderr", stderrProcessor.getError());
+            }
+
+            HTTPContext context = stdoutProcessor.getHttpContext();
+
+            if (context == null) {
+                throw new DeploymentException("Could not retrieve HTTP context from server");
+            }
+
+            return context;
+        } catch (IOException e) {
+            throw new DeploymentException("Could not start deployment", e);
+        }
+    }
+
+    public void stop() {
+        if (process != null) {
+            process.destroy();
+        }
+
+        // clean up tmp files
+        if (shouldDelete) {
+            if (tmpDir.toFile().exists()) {
+                deleteDirectory(tmpDir.toFile());
+            }
+        }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    protected void chmod777(File file) {
+        file.setReadable(true, false);
+        file.setWritable(true, false);
+        file.setExecutable(true, false); // Unix: allow content for dir, redundant for file
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static void deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        directoryToBeDeleted.delete();
+    }
+
+    private static Path javaPath() throws DeploymentException {
+        String javaHome = System.getProperty("java.home");
+        if (javaHome == null) {
+            throw new DeploymentException("Unable to locate java binary");
+        }
+
+        Path binDir = FileSystems.getDefault().getPath(javaHome, "bin");
+
+        Path java = binDir.resolve("java.exe");
+        if (java.toFile().exists()) {
+            return java;
+        }
+
+        java = binDir.resolve("java");
+        if (java.toFile().exists()) {
+            return java;
+        }
+
+        throw new DeploymentException("Unable to locate java binary");
+    }
+}
