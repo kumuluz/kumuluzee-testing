@@ -175,7 +175,7 @@ public class DependencyAppender implements MavenDependencyAppender {
 ```
 
 All appenders must be registered in a service file named
-`com.kumuluz.ee.arquillian.container.spi.MavenDependencyAppender`.
+`com.kumuluz.ee.testing.arquillian.spi.MavenDependencyAppender`.
 
 The method `addLibraries()` must return a list of Strings, each one specifying one dependency in the
 format: `<groupId>:<artifactId>:<version>`. When including a KumuluzEE component, the version part can be omitted and
