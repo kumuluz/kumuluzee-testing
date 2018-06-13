@@ -194,6 +194,38 @@ public class RequiredDependencyAppender implements MavenDependencyAppender {
 }
 ```
 
+### Debugging tests
+
+Since adapter starts new containers in a separate process, the debugger needs to connect to them through socket. In
+order to instruct the adapter to start the containers in debug mode, you can use the following configuration as the
+`arquillian.xml` file:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian http://www.jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <container qualifier="KumuluzEE" default="true">
+        <configuration>
+            <property name="javaArguments">-Xmx512m -XX:MaxPermSize=128m -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y</property>
+        </configuration>
+    </container>
+
+</arquillian>
+```
+
+This will open the 8787 port and suspend the container, until debugger connects to it. After the test has started, the
+following message will occur:
+
+```
+Listening for transport dt_socket at address: 8787
+```
+
+After that, the debugger can connect to the process and debugging can begin. Debugging remotes is supported by most
+modern IDEs. For more information, see
+[the official Arquillian guide on debugging managed servers](http://arquillian.org/guides/getting_started_rinse_and_repeat/#debug_a_managed_server).
+
 ## Changelog
 
 Recent changes can be viewed on Github on the [Releases Page](https://github.com/kumuluz/kumuluzee-testing/releases)
