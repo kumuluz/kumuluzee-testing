@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +90,26 @@ public abstract class AbstractDeployment {
     public HTTPContext start() throws DeploymentException {
 
         List<String> arguments = new ArrayList<>();
-        arguments.add(javaPath().toString());
+
+        Path javaPath;
+
+        if (!this.containerConfig.getJavaPath().equals("")) {
+            // java binary is specified in container configuration
+            javaPath = Paths.get(this.containerConfig.getJavaPath());
+
+            if (!javaPath.toFile().exists()) {
+                throw new DeploymentException("Specified java binary " + this.containerConfig.getJavaPath() +
+                        " could not be found.");
+            }
+        } else {
+            // automatically discover java binary
+            javaPath = javaPath();
+        }
+
+        arguments.add(javaPath.toString());
+        if (!this.containerConfig.getJavaArguments().trim().isEmpty()) {
+            arguments.addAll(Arrays.asList(this.containerConfig.getJavaArguments().trim().split(" ")));
+        }
         arguments.addAll(createArguments());
 
         try {

@@ -76,6 +76,8 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
     private String packaging = PACKAGING_EXPLODED;
     private String kumuluzVersion = "2.6.0-SNAPSHOT";
     private String includeRequiredLibraries = INCLUDE_LIBS_DEFAULT;
+    private String javaPath = "";
+    private String javaArguments = "";
 
     public void validate() throws ConfigurationException {
         if (containerStartTimeoutMs <= 0) {
@@ -131,5 +133,21 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
 
     public void setIncludeRequiredLibraries(String includeRequiredLibraries) {
         this.includeRequiredLibraries = includeRequiredLibraries;
+    }
+
+    public String getJavaPath() {
+        return javaPath;
+    }
+
+    public void setJavaPath(String javaPath) {
+        this.javaPath = javaPath;
+    }
+
+    public String getJavaArguments() {
+        return javaArguments;
+    }
+
+    public void setJavaArguments(String javaArguments) {
+        this.javaArguments = javaArguments;
     }
 }

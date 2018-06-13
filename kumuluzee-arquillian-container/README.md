@@ -130,6 +130,9 @@ The following attributes are supported:
   MicroProfile Config 1.0).
   - `MicroProfile-1.2` - The contents of MicroProfile 1.2 is included (Everything in MicroProfile 1.0 +
   MicroProfile Config 1.1, Fault Tolerance 1.0, JWT Propagation 1.0, Health Metrics 1.0 and Health Check 1.0).
+- `javaPath` - Path to the java binary. If empty string, the adapter will try to find java binary automatically.
+  Default value: `""`.
+- `javaArguments` - Additional arguments, passed to the java binary. Default value: `""`.
 
 Example of the `arquillian.xml` file:
 
