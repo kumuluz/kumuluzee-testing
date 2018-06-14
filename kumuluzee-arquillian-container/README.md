@@ -156,13 +156,15 @@ Example of the `arquillian.xml` file:
 
 ### Adding dependencies to deployments
 
-The following dependencies are added to each deployment automatically:
+By default the following dependencies are added to each deployment automatically:
 
 - `kumuluzee-core`
 - `kumuluzee-servlet-jetty`
 - `kumuluzee-cdi-weld`
 
-The version of the above mentioned dependencies is determined with the configuration property `kumuluzVersion`.
+The version of the above mentioned dependencies is determined with the configuration property `kumuluzVersion`. For
+additional control over the automatic addition of dependencies, see the `includeRequiredLibraries` configuration
+parameter above.
 
 In order to correctly resolve additional Maven dependencies, use the `MavenDependencyAppender` interface.
 For example, to include `kumuluzee-metrics` in each deployment use the following appender:
