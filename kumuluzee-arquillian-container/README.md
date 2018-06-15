@@ -196,6 +196,27 @@ public class RequiredDependencyAppender implements MavenDependencyAppender {
 }
 ```
 
+If additional configuration of Maven resolver is needed, configuration can be applied by overriding the
+`configureResolver(ConfigurableMavenResolverSystem resolver)` method in service class implementing the
+`MavenDependencyAppender` interface. For example, to add an additional remote repository, use the following code:
+
+```java
+public class RequiredDependencyAppender implements MavenDependencyAppender {
+
+    public List<String> addLibraries() {
+        return ...;
+    }
+
+    @Override
+    public ConfigurableMavenResolverSystem configureResolver(ConfigurableMavenResolverSystem resolver) {
+        MavenRemoteRepository customRepo = MavenRemoteRepositories
+                .createRemoteRepository(...);
+        customRepo.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_DAILY);
+        return resolver.withRemoteRepo(customRepo);
+    }
+}
+```
+
 ### Debugging tests
 
 Since adapter starts new containers in a separate process, the debugger needs to connect to them through socket. In

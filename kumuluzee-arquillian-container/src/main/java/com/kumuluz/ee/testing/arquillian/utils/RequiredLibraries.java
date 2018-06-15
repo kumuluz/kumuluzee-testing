@@ -92,9 +92,9 @@ public class RequiredLibraries {
             resolver = resolver.withRemoteRepo(sonatypeSnapshots);
         }
 
+        resolver = MavenDependencyAppender.runResolverConfigurations(resolver);
+
         return resolver.resolve(libraries).withTransitivity().asFile();
-
-
     }
 
     /**

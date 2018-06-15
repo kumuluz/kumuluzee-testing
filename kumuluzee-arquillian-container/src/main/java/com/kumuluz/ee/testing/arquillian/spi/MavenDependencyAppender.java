@@ -20,6 +20,8 @@
  */
 package com.kumuluz.ee.testing.arquillian.spi;
 
+import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -31,6 +33,16 @@ import java.util.ServiceLoader;
  * @since 1.0.0
  */
 public interface MavenDependencyAppender {
+
+    /**
+     * Exposes Maven resolver system for additional configuration, before using it to resolve dependencies.
+     *
+     * @param resolver Exposed resolver.
+     * @return Configured resolver.
+     */
+    default ConfigurableMavenResolverSystem configureResolver(ConfigurableMavenResolverSystem resolver) {
+        return resolver;
+    }
 
     /**
      * Should return a list of dependencies to be added to each deployment.
@@ -50,5 +62,13 @@ public interface MavenDependencyAppender {
                 .forEach(mavenDependencyAppender -> libraries.addAll(mavenDependencyAppender.addLibraries()));
 
         return libraries;
+    }
+
+    static ConfigurableMavenResolverSystem runResolverConfigurations(ConfigurableMavenResolverSystem resolver) {
+        for (MavenDependencyAppender mda : ServiceLoader.load(MavenDependencyAppender.class)) {
+            resolver = mda.configureResolver(resolver);
+        }
+
+        return resolver;
     }
 }
