@@ -9,7 +9,7 @@ which enables the use of KumuluzEE container in integration tests.
 KumuluzEE Arquillian Container Adapter starts the KumuluzEE server before running the tests, which enables the tests to interact with
 the environment closely resembling the one in production.
 
-The extension supports KumuluzEE version 2.6.0 or higher.
+The extension supports KumuluzEE version 2.5.3 or higher.
 
 ## Usage
 
