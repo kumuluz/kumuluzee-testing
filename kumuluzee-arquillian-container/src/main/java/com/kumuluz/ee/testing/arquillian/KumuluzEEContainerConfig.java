@@ -74,7 +74,7 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
     private boolean deleteTemporaryFiles = true;
     private long containerStartTimeoutMs = 60 * 1000;
     private String packaging = PACKAGING_EXPLODED;
-    private String kumuluzVersion = "2.6.0-SNAPSHOT";
+    private String kumuluzVersion = "2.5.3";
     private String includeRequiredLibraries = INCLUDE_LIBS_DEFAULT;
     private String javaPath = "";
     private String javaArguments = "";
