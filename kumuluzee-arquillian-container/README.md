@@ -14,6 +14,7 @@ The extension supports KumuluzEE version 2.6.0 or higher.
 ## Usage
 
 You can use the KumuluzEE Arquillian Container Adapter by adding the following dependency:
+
 ```xml
 <dependency>
     <groupId>com.kumuluz.ee.testing</groupId>
@@ -40,6 +41,7 @@ To use the Arquillian framework, add the Arquillian BOM to the dependency manage
 ```
 
 If tests are using the jUnit framework, add the following dependencies:
+
 ```xml
 <dependency>
     <groupId>org.jboss.arquillian.junit</groupId>
@@ -50,6 +52,22 @@ If tests are using the jUnit framework, add the following dependencies:
     <groupId>junit</groupId>
     <artifactId>junit</artifactId>
     <version>${junit.version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
+If tests are using the TestNG framework, add the following dependencies instead of the jUnit ones:
+
+```xml
+<dependency>
+    <groupId>org.jboss.arquillian.testng</groupId>
+    <artifactId>arquillian-testng-container</artifactId>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.testng</groupId>
+    <artifactId>testng</artifactId>
+    <version>${testng.version}</version>
     <scope>test</scope>
 </dependency>
 ```
