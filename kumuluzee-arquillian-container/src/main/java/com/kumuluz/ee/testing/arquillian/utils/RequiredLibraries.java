@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Includes methods used for collecting libraries, required for each deployment.
@@ -78,10 +79,6 @@ public class RequiredLibraries {
         libraries = libraries.stream().map(s -> (s.endsWith(":")) ? s + kumuluzVersion : s)
                 .collect(Collectors.toList());
 
-        if (libraries.isEmpty()) {
-            return new File[] {};
-        }
-
         ConfigurableMavenResolverSystem resolver = Maven.configureResolver();
 
         if (kumuluzVersion.contains("SNAPSHOT")) {
@@ -94,7 +91,18 @@ public class RequiredLibraries {
 
         resolver = MavenDependencyAppender.runResolverConfigurations(resolver);
 
-        return resolver.resolve(libraries).withTransitivity().asFile();
+        File[] resolvedLibs = (libraries.isEmpty()) ? new File[0] :
+                resolver.resolve(libraries).withTransitivity().asFile();
+
+        if (config.getIncludeRequiredLibraries().equals(KumuluzEEContainerConfig.INCLUDE_LIBS_FROM_POM)) {
+            File[] pomLibs = resolver.loadPomFromFile("pom.xml").importRuntimeAndTestDependencies()
+                    .resolve().withTransitivity().asFile();
+
+            // merge arrays
+            resolvedLibs = Stream.concat(Arrays.stream(resolvedLibs), Arrays.stream(pomLibs)).toArray(File[]::new);
+        }
+
+        return resolvedLibs;
     }
 
     /**
@@ -106,6 +114,7 @@ public class RequiredLibraries {
     private static List<String> getIncludedLibraries(String includeRequiredLibraries) {
         switch (includeRequiredLibraries) {
             case KumuluzEEContainerConfig.INCLUDE_LIBS_FALSE:
+            case KumuluzEEContainerConfig.INCLUDE_LIBS_FROM_POM:
                 return Collections.emptyList();
             case KumuluzEEContainerConfig.INCLUDE_LIBS_DEFAULT:
                 return Arrays.asList(LIBS_DEFAULT);

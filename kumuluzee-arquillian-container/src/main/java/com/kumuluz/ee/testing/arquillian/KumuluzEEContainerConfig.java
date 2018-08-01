@@ -62,6 +62,7 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
     public static final String INCLUDE_LIBS_MP1_0 = "MicroProfile-1.0";
     public static final String INCLUDE_LIBS_MP1_1 = "MicroProfile-1.1";
     public static final String INCLUDE_LIBS_MP1_2 = "MicroProfile-1.2";
+    public static final String INCLUDE_LIBS_FROM_POM = "fromPom";
 
     private static final String[] ALLOWED_INCLUDE_LIBS = {
             INCLUDE_LIBS_FALSE,
@@ -69,6 +70,7 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
             INCLUDE_LIBS_MP1_0,
             INCLUDE_LIBS_MP1_1,
             INCLUDE_LIBS_MP1_2,
+            INCLUDE_LIBS_FROM_POM,
     };
 
     private boolean deleteTemporaryFiles = true;
