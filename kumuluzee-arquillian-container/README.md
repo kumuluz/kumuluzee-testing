@@ -148,6 +148,8 @@ The following attributes are supported:
   MicroProfile Config 1.0).
   - `MicroProfile-1.2` - The contents of MicroProfile 1.2 is included (Everything in MicroProfile 1.0 +
   MicroProfile Config 1.1, Fault Tolerance 1.0, JWT Propagation 1.0, Health Metrics 1.0 and Health Check 1.0).
+  - `fromPom` - The dependencies are resolved from the project's `pom.xml` file. All libraries from the runtime and test
+  scopes are resolved across the whole POM hierarchy.
 - `javaPath` - Path to the java binary. If empty string, the adapter will try to find java binary automatically.
   Default value: `""`.
 - `javaArguments` - Additional arguments, passed to the java binary. Default value: `""`.
@@ -184,7 +186,12 @@ The version of the above mentioned dependencies is determined with the configura
 additional control over the automatic addition of dependencies, see the `includeRequiredLibraries` configuration
 parameter above.
 
-In order to correctly resolve additional Maven dependencies, use the `MavenDependencyAppender` interface.
+The first thing to try when additional dependencies are needed is to set the `includeRequiredLibraries` configuration
+parameter to `fromPom` (see above). This will instruct the adapter to try to resolve dependencies from the project's
+`pom.xml` file. If that produces conflicts or doesn't include the dependencies properly, the dependencies must be
+specified manually.
+
+To specify the dependencies manually use the `MavenDependencyAppender` interface.
 For example, to include `kumuluzee-metrics` in each deployment use the following appender:
 
 ```java
