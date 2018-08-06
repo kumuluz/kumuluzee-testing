@@ -26,6 +26,10 @@ import com.kumuluz.ee.common.ServletServer;
 import com.kumuluz.ee.common.config.EeConfig;
 import com.kumuluz.ee.common.servlet.ServletWrapper;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -39,25 +43,50 @@ public class MainWrapper {
     public static final String MSG_PREFIX = "KumuluzEE Arquillian: ";
     public static final String MSG_SERVER_STARTED = MSG_PREFIX + "Server started";
     public static final String MSG_METADATA_PREFIX = MSG_PREFIX + "HTTP Context: ";
+    public static final String MSG_EXCEPTION_PREFIX = MSG_PREFIX + "Exception thrown: ";
 
     public static void main(String[] args) {
-        EeApplication app = new EeApplication();
+        try {
+            System.setProperty("kumuluzee.server.jetty.forward-startup-exception", "true");
 
-        KumuluzServer server = app.getServer();
-        if (server instanceof ServletServer) {
-            // print metadata (gets intercepted by parent process)
-            // print port
-            Integer port = EeConfig.getInstance().getServer().getHttp().getPort();
-            System.out.print(MSG_METADATA_PREFIX + port + "\t");
+            EeApplication app = new EeApplication();
 
-            // print information about the servlets
-            List<ServletWrapper> servlets = ((ServletServer) server).getRegisteredServlets();
-            for (ServletWrapper s : servlets) {
-                System.out.print(s.getName() + ":" + s.getContextPath() + "\t");
+            KumuluzServer server = app.getServer();
+            if (server instanceof ServletServer) {
+                // print metadata (gets intercepted by parent process)
+                // print port
+                Integer port = EeConfig.getInstance().getServer().getHttp().getPort();
+
+                StringBuilder metadataSb = new StringBuilder();
+                metadataSb.append(MSG_METADATA_PREFIX).append(port).append('\t');
+
+                // print information about the servlets
+                List<ServletWrapper> servlets = ((ServletServer) server).getRegisteredServlets();
+                for (ServletWrapper s : servlets) {
+                    metadataSb.append(s.getName()).append(':').append(s.getContextPath()).append('\t');
+                }
+                System.out.println(metadataSb.toString());
             }
-            System.out.println();
-        }
 
-        System.out.println(MSG_SERVER_STARTED);
+            System.out.println(MSG_SERVER_STARTED);
+        } catch (Exception e) {
+            System.out.println(MSG_EXCEPTION_PREFIX + serializeException(e));
+            throw e;
+        }
+    }
+
+    private static String serializeException(Exception e) {
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            ObjectOutputStream so = new ObjectOutputStream(bo);
+            so.writeObject(e);
+            so.flush();
+
+            return Base64.getEncoder().encodeToString(bo.toByteArray());
+        } catch (IOException e1) {
+            Exception newEx = new RuntimeException("IO error while serializing exception", e1);
+            newEx.printStackTrace();
+            return serializeException(newEx);
+        }
     }
 }

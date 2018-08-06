@@ -26,6 +26,7 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
 
 import java.io.*;
+import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -67,11 +68,6 @@ public class OutputProcessor implements Runnable, Closeable {
                 } else {
                     System.out.println(line);
                 }
-
-                if (line.contains("DeploymentException")) { // TODO better detection
-                    this.error = new javax.enterprise.inject.spi.DeploymentException("Error starting container");
-                    this.latch.countDown();
-                }
             }
         } catch (IOException | ParsingException e) {
             this.error = e;
@@ -112,6 +108,18 @@ public class OutputProcessor implements Runnable, Closeable {
                     httpContext.add(new Servlet(servletInfo[0], (servletInfo.length > 1) ? servletInfo[1] : ""));
                 }
             }
+        } else if (message.startsWith(MainWrapper.MSG_EXCEPTION_PREFIX)) {
+            try {
+                byte[] serialized = Base64.getDecoder().decode(
+                        message.substring(MainWrapper.MSG_EXCEPTION_PREFIX.length()).getBytes());
+                ByteArrayInputStream bi = new ByteArrayInputStream(serialized);
+                ObjectInputStream si = new ObjectInputStream(bi);
+                this.error = (Exception) si.readObject();
+                this.latch.countDown();
+            } catch (IOException | ClassNotFoundException e1) {
+                throw new ParsingException("Error while deserializing exception.", e1);
+            }
+
         } else {
             throw new ParsingException("Could not parse message: " + message);
         }
