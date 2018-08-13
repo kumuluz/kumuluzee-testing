@@ -3,11 +3,11 @@
 
 > Arquillian container adapter for the KumuluzEE microservice framework
 
-KumuluzEE Arquillian Container Adapter is an adapter for the [Arquillian](http://arquillian.org/) integration testing framework,
-which enables the use of KumuluzEE container in integration tests.
+KumuluzEE Arquillian Container Adapter is an adapter for the [Arquillian](http://arquillian.org/) integration testing
+framework, which enables the use of KumuluzEE container in integration tests.
 
-KumuluzEE Arquillian Container Adapter starts the KumuluzEE server before running the tests, which enables the tests to interact with
-the environment closely resembling the one in production.
+KumuluzEE Arquillian Container Adapter starts the KumuluzEE server before running the tests, which enables the tests to
+interact with the environment closely resembling the one in production.
 
 The extension supports KumuluzEE version 2.5.3 or higher.
 
@@ -124,8 +124,8 @@ folder of this project.
 
 ### Configuring Arquillian Container Adapter
 
-KumuluzEE Arquillian Container Adapter uses common sense default values and should work with no additional configuration for most
-use-cases. In order to configure the container, add the `arquillian.xml` file to the root of the classpath.
+KumuluzEE Arquillian Container Adapter uses common sense default values and should work with no additional configuration
+for most use-cases. In order to configure the container, add the `arquillian.xml` file to the root of the classpath.
 
 The following attributes are supported:
 
@@ -135,7 +135,7 @@ The following attributes are supported:
   elapsed, the container is considered dead and the test fails with `DeploymentException`.
   Default value: `60000` (60 seconds).
 - `kumuluzVersion` - The version of the KumuluzEE core framework, which is added to every deployment.
-  Default value: The latest version of KumuluzEE.
+  Default value: Automatically determined from project's dependencies (based on the `kumuluzee-common` dependency).
 - `includeRequiredLibraries` - The dependencies, that are automatically included in all deployments. The values can be
   any of the following:
   
@@ -285,7 +285,8 @@ See the [contributing docs](https://github.com/kumuluz/kumuluzee-testing/blob/ma
 When submitting an issue, please follow the 
 [guidelines](https://github.com/kumuluz/kumuluzee-testing/blob/master/CONTRIBUTING.md#bugs).
 
-When submitting a bugfix, write a test that exposes the bug and fails before applying your fix. Submit the test alongside the fix.
+When submitting a bugfix, write a test that exposes the bug and fails before applying your fix. Submit the test
+alongside the fix.
 
 When submitting a new feature, add tests that cover the feature.
 

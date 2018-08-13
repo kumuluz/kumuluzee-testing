@@ -24,6 +24,9 @@ import org.jboss.arquillian.container.spi.ConfigurationException;
 import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 import java.util.Arrays;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 /**
  * KumuluzEE Container Adapter configuration class.
@@ -32,6 +35,8 @@ import java.util.Arrays;
  * @since 1.0.0
  */
 public class KumuluzEEContainerConfig implements ContainerConfiguration {
+
+    private static final Logger log = Logger.getLogger(KumuluzEEContainerConfig.class.getName());
 
     private static KumuluzEEContainerConfig instance = null;
 
@@ -73,10 +78,12 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
             INCLUDE_LIBS_FROM_POM,
     };
 
+    private static final String defaultKumuluzVersion = "3.0.0-SNAPSHOT";
+
     private boolean deleteTemporaryFiles = true;
     private long containerStartTimeoutMs = 60 * 1000;
     private String packaging = PACKAGING_EXPLODED;
-    private String kumuluzVersion = "2.5.3";
+    private String kumuluzVersion = null;
     private String includeRequiredLibraries = INCLUDE_LIBS_DEFAULT;
     private String javaPath = "";
     private String javaArguments = "";
@@ -94,6 +101,23 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
         if (!Arrays.asList(ALLOWED_INCLUDE_LIBS).contains(includeRequiredLibraries)) {
             throw new ConfigurationException("includeRequiredLibraries parameter " + includeRequiredLibraries +
                     " not recognised. Use one of the following: " + Arrays.toString(ALLOWED_INCLUDE_LIBS));
+        }
+
+        if (this.kumuluzVersion == null) {
+            try {
+                ResourceBundle coreVersionBundle = ResourceBundle.getBundle("META-INF/kumuluzee/versions");
+                String version = coreVersionBundle.getString("version");
+                if (version.isEmpty()) {
+                    throw new MissingResourceException("Version is empty.", KumuluzEEContainerConfig.class.getName(),
+                            "version");
+                }
+                log.info("Using auto-discovered KumuluzEE version " + version);
+                this.kumuluzVersion = version;
+            } catch (MissingResourceException e) {
+                log.info("Could not determine KumuluzEE version automatically. Using default version: " +
+                        defaultKumuluzVersion);
+                this.kumuluzVersion = defaultKumuluzVersion;
+            }
         }
     }
 
