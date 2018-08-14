@@ -209,7 +209,8 @@ All appenders must be registered in a service file named
 
 The method `addLibraries()` must return a list of Strings, each one specifying one dependency in the
 format: `<groupId>:<artifactId>:<version>`. When including a KumuluzEE component, the version part can be omitted and
-the version specified with the `kumuluzVersion` property will be used (latest version by default). For example:
+the version specified with the `kumuluzVersion` property will be used (by default the version is resolved from
+project's dependencies). For example:
 
 ```java
 public class RequiredDependencyAppender implements MavenDependencyAppender {
