@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  */
 public class KumuluzEEContainerConfig implements ContainerConfiguration {
 
-    private static final Logger log = Logger.getLogger(KumuluzEEContainerConfig.class.getName());
+    private static final Logger LOG = Logger.getLogger(KumuluzEEContainerConfig.class.getName());
 
     private static KumuluzEEContainerConfig instance = null;
 
@@ -103,6 +103,7 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
                     " not recognised. Use one of the following: " + Arrays.toString(ALLOWED_INCLUDE_LIBS));
         }
 
+        boolean autoDiscovered = false;
         if (this.kumuluzVersion == null) {
             try {
                 ResourceBundle coreVersionBundle = ResourceBundle.getBundle("META-INF/kumuluzee/versions");
@@ -111,14 +112,15 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
                     throw new MissingResourceException("Version is empty.", KumuluzEEContainerConfig.class.getName(),
                             "version");
                 }
-                log.info("Using auto-discovered KumuluzEE version " + version);
                 this.kumuluzVersion = version;
+                autoDiscovered = true;
             } catch (MissingResourceException e) {
-                log.info("Could not determine KumuluzEE version automatically. Using default version: " +
-                        defaultKumuluzVersion);
+                LOG.info("Could not determine KumuluzEE version automatically. Using default version.");
                 this.kumuluzVersion = defaultKumuluzVersion;
             }
         }
+
+        LOG.info("Using KumuluzEE version " + this.kumuluzVersion + ((autoDiscovered) ? " (auto-discovered)" : ""));
     }
 
     public boolean shouldDeleteTemporaryFiles() {

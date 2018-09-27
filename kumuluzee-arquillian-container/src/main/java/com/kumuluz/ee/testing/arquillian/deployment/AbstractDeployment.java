@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * Base for a runnable deployment.
@@ -45,6 +46,8 @@ import java.util.concurrent.TimeUnit;
  * @since 1.0.0
  */
 public abstract class AbstractDeployment {
+
+    private static final Logger LOG = Logger.getLogger(AbstractDeployment.class.getName());
 
     private KumuluzEEContainerConfig containerConfig;
 
@@ -113,6 +116,8 @@ public abstract class AbstractDeployment {
         arguments.addAll(createArguments());
 
         try {
+            LOG.fine("Starting process. Working directory: " + tmpDir.toString() + ". Command: " +
+                    String.join(" ", arguments));
             process = new ProcessBuilder().directory(tmpDir.toFile()).command(arguments).start();
 
             CountDownLatch serverReady = new CountDownLatch(1);
@@ -136,11 +141,14 @@ public abstract class AbstractDeployment {
                 throw new DeploymentException("Deployment failed to start in time");
             }
 
-            if (stdoutProcessor.getError() != null) {
-                throw new DeploymentException("Error while processing server stdout", stdoutProcessor.getError());
+            if (stdoutProcessor.getProcessingError() != null) {
+                throw new DeploymentException("Error while processing server stdout", stdoutProcessor.getProcessingError());
             }
-            if (stderrProcessor.getError() != null) {
-                throw new DeploymentException("Error while processing server stderr", stderrProcessor.getError());
+            if (stderrProcessor.getProcessingError() != null) {
+                throw new DeploymentException("Error while processing server stderr", stderrProcessor.getProcessingError());
+            }
+            if (stdoutProcessor.getDeploymentError() != null) {
+                throw new DeploymentException("Exception thrown during deployment", stdoutProcessor.getDeploymentError());
             }
 
             HTTPContext context = stdoutProcessor.getHttpContext();
@@ -148,6 +156,8 @@ public abstract class AbstractDeployment {
             if (context == null) {
                 throw new DeploymentException("Could not retrieve HTTP context from server");
             }
+
+            LOG.fine("Deployment started, context: " + context.toString());
 
             return context;
         } catch (IOException e) {

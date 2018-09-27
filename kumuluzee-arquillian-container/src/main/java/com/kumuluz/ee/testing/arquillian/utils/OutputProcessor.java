@@ -41,7 +41,8 @@ public class OutputProcessor implements Runnable, Closeable {
     private CountDownLatch latch;
 
     private HTTPContext httpContext;
-    private Throwable error;
+    private Throwable processingError;
+    private Throwable deploymentError;
 
     public OutputProcessor(InputStream stream, CountDownLatch latch) {
         this.stream = stream;
@@ -52,8 +53,12 @@ public class OutputProcessor implements Runnable, Closeable {
         return httpContext;
     }
 
-    public Throwable getError() {
-        return error;
+    public Throwable getProcessingError() {
+        return processingError;
+    }
+
+    public Throwable getDeploymentError() {
+        return deploymentError;
     }
 
     @Override
@@ -70,7 +75,7 @@ public class OutputProcessor implements Runnable, Closeable {
                 }
             }
         } catch (IOException | ParsingException e) {
-            this.error = e;
+            this.processingError = e;
             this.latch.countDown();
         }
     }
@@ -114,7 +119,7 @@ public class OutputProcessor implements Runnable, Closeable {
                         message.substring(MainWrapper.MSG_EXCEPTION_PREFIX.length()).getBytes());
                 ByteArrayInputStream bi = new ByteArrayInputStream(serialized);
                 ObjectInputStream si = new ObjectInputStream(bi);
-                this.error = (Exception) si.readObject();
+                this.deploymentError = (Exception) si.readObject();
                 this.latch.countDown();
             } catch (IOException | ClassNotFoundException e1) {
                 throw new ParsingException("Error while deserializing exception.", e1);

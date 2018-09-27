@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,6 +43,8 @@ import java.util.stream.Stream;
  * @since 1.0.0
  */
 public class RequiredLibraries {
+
+    private static final Logger LOG = Logger.getLogger(RequiredLibraries.class.getName());
 
     private static final String[] LIBS_DEFAULT = {
             "com.kumuluz.ee:kumuluzee-core:",
@@ -73,7 +76,10 @@ public class RequiredLibraries {
         KumuluzEEContainerConfig config = KumuluzEEContainerConfig.getInstance();
         String kumuluzVersion = config.getKumuluzVersion();
 
-        libraries.addAll(getIncludedLibraries(config.getIncludeRequiredLibraries()));
+        List<String> includedLibs = getIncludedLibraries(config.getIncludeRequiredLibraries());
+        LOG.fine("Adding libraries based on the includeRequiredLibraries config parameter (value: " +
+                config.getIncludeRequiredLibraries() + "): " + String.join(", ", includedLibs));
+        libraries.addAll(includedLibs);
 
         // append kumuluz version, if version not included
         libraries = libraries.stream().map(s -> (s.endsWith(":")) ? s + kumuluzVersion : s)
@@ -82,6 +88,7 @@ public class RequiredLibraries {
         ConfigurableMavenResolverSystem resolver = Maven.configureResolver();
 
         if (kumuluzVersion.contains("SNAPSHOT")) {
+            LOG.fine("KumuluzEE version is snapshot, adding snapshot repository to Maven resolver");
             MavenRemoteRepository sonatypeSnapshots = MavenRemoteRepositories
                     .createRemoteRepository("sonatype-snapshots",
                             "https://oss.sonatype.org/content/repositories/snapshots", "default");
@@ -95,6 +102,7 @@ public class RequiredLibraries {
                 resolver.resolve(libraries).withTransitivity().asFile();
 
         if (config.getIncludeRequiredLibraries().equals(KumuluzEEContainerConfig.INCLUDE_LIBS_FROM_POM)) {
+            LOG.fine("Resolving runtime and test dependencies from pom.xml");
             File[] pomLibs = resolver.loadPomFromFile("pom.xml").importRuntimeAndTestDependencies()
                     .resolve().withTransitivity().asFile();
 

@@ -20,6 +20,7 @@
  */
 package com.kumuluz.ee.testing.arquillian;
 
+import com.kumuluz.ee.logs.impl.JavaUtilDefaultLogConfigurator;
 import com.kumuluz.ee.testing.arquillian.deployment.AbstractDeployment;
 import com.kumuluz.ee.testing.arquillian.deployment.ExplodedDeployment;
 import com.kumuluz.ee.testing.arquillian.deployment.UberJarDeployment;
@@ -44,11 +45,23 @@ import java.util.logging.Logger;
  */
 public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContainerConfig> {
 
-    private static final Logger log = Logger.getLogger(KumuluzEEContainer.class.getName());
+    private final Logger LOG; // initialized in constructor after logging init
+
+    private static boolean loggingInitialized = false;
+
+    private static synchronized void initLogging() {
+        if (!loggingInitialized) {
+            // initialize logging the same way as in KumuluzEE
+            JavaUtilDefaultLogConfigurator.init();
+            loggingInitialized = true;
+        }
+    }
 
     private Map<Archive, AbstractDeployment> deployments;
 
     public KumuluzEEContainer() {
+        initLogging();
+        this.LOG = Logger.getLogger(KumuluzEEContainer.class.getName());
         this.deployments = new HashMap<>();
     }
 
@@ -109,7 +122,7 @@ public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContaine
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
-        log.info("Deploying " + archive.getName());
+        LOG.info("Deploying " + archive.getName());
 
         KumuluzEEContainerConfig containerConfig = KumuluzEEContainerConfig.getInstance();
 
@@ -118,12 +131,12 @@ public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContaine
         switch (containerConfig.getPackaging()) {
             case KumuluzEEContainerConfig.PACKAGING_UBER_JAR:
                 Archive<?> uberJar = ArchiveUtils.generateUberJar(archive);
-                log.fine("UberJar: " + uberJar.toString(true));
+                LOG.fine("UberJar: " + uberJar.toString(true));
                 deployment = new UberJarDeployment(uberJar);
                 break;
             case KumuluzEEContainerConfig.PACKAGING_EXPLODED:
                 Archive<?> exploded = ArchiveUtils.generateExploded(archive);
-                log.fine("Exploded structure: " + exploded.toString(true));
+                LOG.fine("Exploded structure: " + exploded.toString(true));
                 deployment = new ExplodedDeployment(exploded);
                 break;
             default:

@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.logging.Logger;
 
 /**
  * Service Loader interface, used for collecting dependencies, which must be added to each deployment.
@@ -56,16 +57,23 @@ public interface MavenDependencyAppender {
     List<String> addLibraries();
 
     static List<String> getDeclaredLibraries() {
-        List<String> libraries = new ArrayList<>();
+        final Logger LOG = Logger.getLogger(MavenDependencyAppender.class.getName());
 
+        List<String> libraries = new ArrayList<>();
         ServiceLoader.load(MavenDependencyAppender.class)
-                .forEach(mavenDependencyAppender -> libraries.addAll(mavenDependencyAppender.addLibraries()));
+                .forEach(mda -> {
+                    LOG.fine("Adding libraries from " + mda.getClass().getSimpleName());
+                    libraries.addAll(mda.addLibraries());
+                });
 
         return libraries;
     }
 
     static ConfigurableMavenResolverSystem runResolverConfigurations(ConfigurableMavenResolverSystem resolver) {
+        final Logger LOG = Logger.getLogger(MavenDependencyAppender.class.getName());
+
         for (MavenDependencyAppender mda : ServiceLoader.load(MavenDependencyAppender.class)) {
+            LOG.fine("Configuring resolver with " + mda.getClass().getSimpleName());
             resolver = mda.configureResolver(resolver);
         }
 

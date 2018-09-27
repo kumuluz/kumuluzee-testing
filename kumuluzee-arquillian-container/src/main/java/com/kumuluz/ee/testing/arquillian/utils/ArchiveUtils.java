@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  */
 public class ArchiveUtils {
 
-    private static final Logger log = Logger.getLogger(ArchiveUtils.class.getName());
+    private static final Logger LOG = Logger.getLogger(ArchiveUtils.class.getName());
 
     /**
      * These classes are added to the root of the archive
@@ -105,7 +105,7 @@ public class ArchiveUtils {
             if (n.getAsset() instanceof ArchiveAsset) {
                 Archive<?> dependencyJar = ((ArchiveAsset) n.getAsset()).getArchive();
                 if (dependencyJar.contains(ApplicationArchiveMarker.MARKER_FILENAME)) {
-                    log.fine("Found application archive: " + archive.getName());
+                    LOG.fine("Found application archive: " + archive.getName());
                     dependencyJar.delete(ApplicationArchiveMarker.MARKER_FILENAME);
                     javaArchive.merge(dependencyJar);
                     javaArchive.delete(n.getPath());
@@ -169,7 +169,7 @@ public class ArchiveUtils {
         for (Node child : n.getChildren()) {
             Asset childAsset = child.getAsset();
             if (childAsset instanceof ArchiveAsset && child.getPath().get().endsWith(".jar")) {
-                log.fine("Converting archive " + child.getPath().get() + " to ByteArrayAsset");
+                LOG.fine("Converting archive " + child.getPath().get() + " to ByteArrayAsset");
                 ArchiveAsset archiveAsset = (ArchiveAsset) childAsset;
                 ByteArrayAsset bas = new ByteArrayAsset(archiveAsset.openStream());
                 pathsToDelete.add(child.getPath());
