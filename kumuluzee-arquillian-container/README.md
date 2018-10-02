@@ -129,6 +129,8 @@ for most use-cases. In order to configure the container, add the `arquillian.xml
 
 The following attributes are supported:
 
+- `packaging` - Determines the packaging type of the deployed archive. Possible values are `exploded` and `uberJar`.
+  Default value: `exploded`.
 - `deleteTemporaryFiles` - If `true` cleans up created temporary files. Setting this option to `false` is useful when
   debugging, since the exported deployment is preserved. Default value: `true`.
 - `containerStartTimeoutMs` - Time in milliseconds in which the container is expected to start. After this time has

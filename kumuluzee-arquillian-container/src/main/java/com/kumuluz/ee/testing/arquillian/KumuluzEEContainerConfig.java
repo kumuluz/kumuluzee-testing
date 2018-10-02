@@ -55,11 +55,12 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
         return instance;
     }
 
-    public static final String PACKAGING_UBER_JAR = "uber_jar";
+    public static final String PACKAGING_UBER_JAR = "uberJar";
     public static final String PACKAGING_EXPLODED = "exploded";
 
     private static final String[] ALLOWED_PACKAGINGS = {
             PACKAGING_EXPLODED,
+            PACKAGING_UBER_JAR,
     };
 
     public static final String INCLUDE_LIBS_FALSE = "false";

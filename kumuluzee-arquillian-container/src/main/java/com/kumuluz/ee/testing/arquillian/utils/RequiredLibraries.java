@@ -22,6 +22,8 @@ package com.kumuluz.ee.testing.arquillian.utils;
 
 import com.kumuluz.ee.testing.arquillian.KumuluzEEContainerConfig;
 import com.kumuluz.ee.testing.arquillian.spi.MavenDependencyAppender;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositories;
@@ -68,10 +70,12 @@ public class RequiredLibraries {
      * Returns libraries, required for each deployment (specified either using {@link MavenDependencyAppender} or
      * includeRequiredLibraries configuration property).
      *
+     * @param deploymentLibs Additional libraries required by deployment.
      * @return Array of required libraries.
      */
-    public static File[] getRequiredLibraries() {
+    public static Archive<?>[] getRequiredLibraries(List<String> deploymentLibs) {
         List<String> libraries = MavenDependencyAppender.getDeclaredLibraries();
+        libraries.addAll(deploymentLibs);
 
         KumuluzEEContainerConfig config = KumuluzEEContainerConfig.getInstance();
         String kumuluzVersion = config.getKumuluzVersion();
@@ -98,16 +102,16 @@ public class RequiredLibraries {
 
         resolver = MavenDependencyAppender.runResolverConfigurations(resolver);
 
-        File[] resolvedLibs = (libraries.isEmpty()) ? new File[0] :
-                resolver.resolve(libraries).withTransitivity().asFile();
+        Archive[] resolvedLibs = (libraries.isEmpty()) ? new Archive[0] :
+                resolver.resolve(libraries).withTransitivity().as(JavaArchive.class);
 
         if (config.getIncludeRequiredLibraries().equals(KumuluzEEContainerConfig.INCLUDE_LIBS_FROM_POM)) {
             LOG.fine("Resolving runtime and test dependencies from pom.xml");
-            File[] pomLibs = resolver.loadPomFromFile("pom.xml").importRuntimeAndTestDependencies()
-                    .resolve().withTransitivity().asFile();
+            Archive[] pomLibs = resolver.loadPomFromFile("pom.xml").importRuntimeAndTestDependencies()
+                    .resolve().withTransitivity().as(JavaArchive.class);
 
             // merge arrays
-            resolvedLibs = Stream.concat(Arrays.stream(resolvedLibs), Arrays.stream(pomLibs)).toArray(File[]::new);
+            resolvedLibs = Stream.concat(Arrays.stream(resolvedLibs), Arrays.stream(pomLibs)).toArray(Archive[]::new);
         }
 
         return resolvedLibs;

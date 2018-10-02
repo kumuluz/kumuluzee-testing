@@ -23,6 +23,7 @@ package com.kumuluz.ee.testing.arquillian.jaxrs;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -50,6 +51,7 @@ public class JaxRsTest {
     }
 
     @Test
+    @InSequence(-1) // run first
     public void dependencyAppenderTest() throws ClassNotFoundException {
         Assert.assertNotNull(Class.forName("javax.ws.rs.core.Application"));
     }
