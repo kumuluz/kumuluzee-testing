@@ -79,7 +79,7 @@ public class KumuluzEEContainerConfig implements ContainerConfiguration {
             INCLUDE_LIBS_FROM_POM,
     };
 
-    private static final String defaultKumuluzVersion = "3.0.0-SNAPSHOT";
+    private static final String defaultKumuluzVersion = "3.0.0";
 
     private boolean deleteTemporaryFiles = true;
     private long containerStartTimeoutMs = 60 * 1000;
