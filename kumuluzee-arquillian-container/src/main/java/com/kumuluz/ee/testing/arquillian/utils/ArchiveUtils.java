@@ -75,6 +75,7 @@ public class ArchiveUtils {
 
         // apply necessary transformations from web archive to java archive
         moveDir(javaArchive, "/WEB-INF/classes", "");
+        moveDir(javaArchive, "/WEB-INF/lib", "/lib");
         // CDI enricher adds beans.xml to the WEB-INF directory, if supplied archive is WebArchive.
         // If that is the case, we need to move it to the META-INF directory.
         if (javaArchive.contains("/WEB-INF/beans.xml") && !javaArchive.contains("/META-INF/beans.xml")) {
