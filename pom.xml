@@ -26,16 +26,16 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <kumuluzee.version>3.0.0</kumuluzee.version>
+        <kumuluzee.version>3.12.0-SNAPSHOT</kumuluzee.version>
 
-        <arquillian.version>1.4.0.Final</arquillian.version>
+        <arquillian.version>1.6.0.Final</arquillian.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
-        <shrinkwrap.resolver.version>3.1.3</shrinkwrap.resolver.version>
+        <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
 
         <junit.version>4.12</junit.version>
-        <rest-assured.version>3.1.0</rest-assured.version>
+        <rest-assured.version>3.3.0</rest-assured.version>
 
-        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <nexus.staging.plugin.version>1.6.8</nexus.staging.plugin.version>
         <gpg.plugin.version>1.6</gpg.plugin.version>
     </properties>

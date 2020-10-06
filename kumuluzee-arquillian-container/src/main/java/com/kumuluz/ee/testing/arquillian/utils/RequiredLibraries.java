@@ -30,7 +30,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepositorie
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenRemoteRepository;
 import org.jboss.shrinkwrap.resolver.api.maven.repository.MavenUpdatePolicy;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -102,12 +101,14 @@ public class RequiredLibraries {
 
         resolver = MavenDependencyAppender.runResolverConfigurations(resolver);
 
-        Archive[] resolvedLibs = (libraries.isEmpty()) ? new Archive[0] :
+        Archive<?>[] resolvedLibs = (libraries.isEmpty()) ? new Archive[0] :
                 resolver.resolve(libraries).withTransitivity().as(JavaArchive.class);
 
         if (config.getIncludeRequiredLibraries().equals(KumuluzEEContainerConfig.INCLUDE_LIBS_FROM_POM)) {
-            LOG.fine("Resolving runtime and test dependencies from pom.xml");
-            Archive[] pomLibs = resolver.loadPomFromFile("pom.xml").importRuntimeAndTestDependencies()
+            LOG.fine("Resolving compile, runtime and test dependencies from pom.xml");
+            Archive<?>[] pomLibs = resolver.loadPomFromFile("pom.xml")
+                    .importCompileAndRuntimeDependencies()
+                    .importTestDependencies()
                     .resolve().withTransitivity().as(JavaArchive.class);
 
             // merge arrays
