@@ -24,8 +24,8 @@
             </activation>
             <properties>
                 <gpg.keyname>8DCC0AFC</gpg.keyname>
-                <gpg.secretKeyring>~/secrets/gpg.key</gpg.secretKeyring>
-                <gpg.publicKeyring>~/secrets/gpg.pub</gpg.publicKeyring>
+                <gpg.secretKeyring>${env.GITHUB_WORKSPACE}/gpg.key</gpg.secretKeyring>
+                <gpg.publicKeyring>${env.GITHUB_WORKSPACE}/gpg.pub</gpg.publicKeyring>
                 <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
             </properties>
         </profile>
