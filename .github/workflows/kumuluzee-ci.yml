@@ -60,7 +60,7 @@ jobs:
         env:
           GPG_KEY: ${{ secrets.OSSRH_GPG_KEY }}
           GPG_PUB: ${{ secrets.OSSRH_GPG_PUB }}
-        run: 'printf "$GPG_KEY" | base64 --decode > "$GITHUB_WORKSPACE/gpg.key" && printf "$GPG_PUB" | base64 --decode > "$GITHUB_WORKSPACE/gpg.pub"'
+        run: 'printf "$GPG_KEY" | base64 --decode > "$GITHUB_WORKSPACE/gpg.key" && printf "$GPG_PUB" | base64 --decode > "$GITHUB_WORKSPACE/gpg.pub" && gpg --batch --import "$GITHUB_WORKSPACE/gpg.pub" "$GITHUB_WORKSPACE/gpg.key"'
 
       - name: Publish to OSSRH
         env:
