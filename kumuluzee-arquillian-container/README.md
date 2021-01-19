@@ -1,5 +1,5 @@
 # KumuluzEE Arquillian Container Adapter
-[![Build Status](https://img.shields.io/travis/kumuluz/kumuluzee-testing/master.svg?style=flat)](https://travis-ci.org/kumuluz/kumuluzee-testing)
+![KumuluzEE CI](https://github.com/kumuluz/kumuluzee-testing/workflows/KumuluzEE%20CI/badge.svg)
 
 > Arquillian container adapter for the KumuluzEE microservice framework
 
