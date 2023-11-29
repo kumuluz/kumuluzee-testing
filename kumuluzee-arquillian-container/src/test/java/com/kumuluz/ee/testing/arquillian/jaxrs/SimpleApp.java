@@ -20,8 +20,8 @@
  */
 package com.kumuluz.ee.testing.arquillian.jaxrs;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 
 /**
  * Simple JAX-RS application.

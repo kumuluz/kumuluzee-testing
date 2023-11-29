@@ -23,12 +23,12 @@ package com.kumuluz.ee.testing.arquillian;
 import com.kumuluz.ee.common.exceptions.KumuluzServerException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Starts two deployments and tests for "Address is already in use" exception.
@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
  * @author Urban Malc
  * @since 1.1.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class AddressAlreadyInUseTest {
 
     @Deployment(name = "deployment1", order = 1)

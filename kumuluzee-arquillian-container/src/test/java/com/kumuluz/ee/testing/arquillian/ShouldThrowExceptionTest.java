@@ -21,16 +21,15 @@
 package com.kumuluz.ee.testing.arquillian;
 
 import com.kumuluz.ee.testing.arquillian.assets.InvalidBean;
+import jakarta.enterprise.inject.spi.DeploymentException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.spi.DeploymentException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the {@link ShouldThrowException} annotation.
@@ -38,11 +37,10 @@ import javax.enterprise.inject.spi.DeploymentException;
  * @author Urban Malc
  * @since 1.1.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class ShouldThrowExceptionTest {
 
     @Deployment
-    @ShouldThrowException(DeploymentException.class)
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
                 .addClass(InvalidBean.class)
@@ -50,7 +48,8 @@ public class ShouldThrowExceptionTest {
     }
 
     @Test
-    public void ignored() {
+    @ShouldThrowException(DeploymentException.class)
+    void ignored() {
         // NO-OP, see @ShouldThrowException above
     }
 }

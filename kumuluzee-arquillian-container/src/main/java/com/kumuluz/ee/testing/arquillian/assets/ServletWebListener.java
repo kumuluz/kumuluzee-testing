@@ -20,11 +20,11 @@
  */
 package com.kumuluz.ee.testing.arquillian.assets;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRegistration;
-import javax.servlet.annotation.WebListener;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.annotation.WebListener;
 
 /**
  * Adds Arquillian Servlet mapping to the web container.
@@ -57,6 +57,7 @@ public class ServletWebListener implements ServletContextListener {
 
     private boolean isClassPresent(String classname) {
         try {
+            System.out.println("Checking for class: " + classname);
             Class.forName(classname);
             return true;
         } catch (ClassNotFoundException e) {

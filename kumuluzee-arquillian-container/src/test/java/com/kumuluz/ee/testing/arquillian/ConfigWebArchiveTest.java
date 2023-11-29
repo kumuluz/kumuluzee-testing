@@ -21,17 +21,17 @@
 package com.kumuluz.ee.testing.arquillian;
 
 import com.kumuluz.ee.testing.arquillian.assets.ConfigBean;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.inject.Inject;
 import java.util.Optional;
 
 /**
@@ -40,7 +40,7 @@ import java.util.Optional;
  * @author Urban Malc
  * @since 1.0.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class ConfigWebArchiveTest {
 
     @Deployment
@@ -59,7 +59,7 @@ public class ConfigWebArchiveTest {
     public void configTest() {
         Optional<String> configValue = configBean.getConfigValue();
 
-        Assert.assertTrue(configValue.isPresent());
-        Assert.assertEquals("config-hello", configValue.get());
+        Assertions.assertTrue(configValue.isPresent());
+        Assertions.assertEquals("config-hello", configValue.get());
     }
 }

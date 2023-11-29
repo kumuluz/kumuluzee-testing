@@ -45,6 +45,10 @@ public class ArchiveUtils {
 
     private static final Logger LOG = Logger.getLogger(ArchiveUtils.class.getName());
 
+    private ArchiveUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * These classes are added to the root of the archive
      */
@@ -192,10 +196,9 @@ public class ArchiveUtils {
         Archive<?> tmp = ShrinkWrap.create(JavaArchive.class);
         List<ArchivePath> pathsToDelete = new ArrayList<>();
         for (Node child : n.getChildren()) {
-            Asset childAsset = child.getAsset();
-            if (childAsset instanceof ArchiveAsset && child.getPath().get().endsWith(".jar")) {
+            Asset asset = child.getAsset();
+            if (asset instanceof ArchiveAsset archiveAsset && child.getPath().get().endsWith(".jar")) {
                 LOG.fine("Converting archive " + child.getPath().get() + " to ByteArrayAsset");
-                ArchiveAsset archiveAsset = (ArchiveAsset) childAsset;
                 ByteArrayAsset bas = new ByteArrayAsset(archiveAsset.openStream());
                 pathsToDelete.add(child.getPath());
                 tmp.add(bas, child.getPath());

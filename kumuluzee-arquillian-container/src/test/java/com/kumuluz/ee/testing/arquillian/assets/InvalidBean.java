@@ -20,8 +20,8 @@
  */
 package com.kumuluz.ee.testing.arquillian.assets;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * Bean that tries to inject a String but fails because there is no producer for String type.

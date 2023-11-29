@@ -20,7 +20,7 @@
  */
 package com.kumuluz.ee.testing.arquillian.assets;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  * Bean with a simple response method.

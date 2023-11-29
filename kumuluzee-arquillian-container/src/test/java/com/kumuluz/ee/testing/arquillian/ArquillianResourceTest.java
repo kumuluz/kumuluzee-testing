@@ -22,11 +22,11 @@ package com.kumuluz.ee.testing.arquillian;
 
 import com.kumuluz.ee.testing.arquillian.provider.SimplePojo;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests injection of {@link ArquillianResource}.
@@ -35,7 +35,7 @@ import org.junit.runner.RunWith;
  * @since 1.0.0
  */
 @SuppressWarnings("ArquillianDeploymentAbsent")
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 @RunAsClient
 public class ArquillianResourceTest {
 
@@ -44,7 +44,7 @@ public class ArquillianResourceTest {
 
     @Test
     public void arquillianResourceTest() {
-        Assert.assertNotNull(simplePojo);
-        Assert.assertEquals(42, simplePojo.getNumber());
+        Assertions.assertNotNull(simplePojo);
+        Assertions.assertEquals(42, simplePojo.getNumber());
     }
 }

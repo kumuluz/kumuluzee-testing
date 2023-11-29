@@ -22,14 +22,13 @@ package com.kumuluz.ee.testing.arquillian.jaxrs;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.container.test.api.TargetsContainer;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.is;
@@ -40,7 +39,8 @@ import static org.hamcrest.Matchers.is;
  * @author Urban Malc
  * @since 1.0.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class JaxRsTest {
     @Deployment
     public static JavaArchive createDeployment() {
@@ -51,14 +51,15 @@ public class JaxRsTest {
     }
 
     @Test
-    @InSequence(-1) // run first
-    public void dependencyAppenderTest() throws ClassNotFoundException {
-        Assert.assertNotNull(Class.forName("javax.ws.rs.core.Application"));
+    @Order(1) // run first
+    void dependencyAppenderTest() throws ClassNotFoundException {
+        Assertions.assertNotNull(Class.forName("jakarta.ws.rs.core.Application"));
     }
 
     @Test
     @RunAsClient
-    public void resourceTest() {
+    @Order(2)
+    void resourceTest() {
         when().get("/test").then().statusCode(200).and().body(is("hello"));
     }
 }

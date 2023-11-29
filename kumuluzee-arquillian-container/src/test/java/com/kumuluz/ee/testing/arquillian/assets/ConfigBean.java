@@ -21,8 +21,8 @@
 package com.kumuluz.ee.testing.arquillian.assets;
 
 import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
+import jakarta.enterprise.context.Dependent;
 
-import javax.enterprise.context.Dependent;
 import java.util.Optional;
 
 /**

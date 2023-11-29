@@ -60,7 +60,7 @@ public abstract class AbstractDeployment {
 
     private Process process;
 
-    public AbstractDeployment(Archive<?> archive) {
+    protected AbstractDeployment(Archive<?> archive) {
         this.archive = archive;
         this.containerConfig = KumuluzEEContainerConfig.getInstance();
         this.shouldDelete = this.containerConfig.shouldDeleteTemporaryFiles();
@@ -96,7 +96,7 @@ public abstract class AbstractDeployment {
 
         Path javaPath;
 
-        if (!this.containerConfig.getJavaPath().equals("")) {
+        if (!this.containerConfig.getJavaPath().isEmpty()) {
             // java binary is specified in container configuration
             javaPath = Paths.get(this.containerConfig.getJavaPath());
 
@@ -171,10 +171,8 @@ public abstract class AbstractDeployment {
         }
 
         // clean up tmp files
-        if (shouldDelete) {
-            if (tmpDir.toFile().exists()) {
-                deleteDirectory(tmpDir.toFile());
-            }
+        if (shouldDelete && tmpDir.toFile().exists()) {
+            deleteDirectory(tmpDir.toFile());
         }
     }
 

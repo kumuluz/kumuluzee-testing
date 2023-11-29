@@ -51,8 +51,8 @@ public class MainWrapper {
 
             EeApplication app = new EeApplication();
 
-            KumuluzServer server = app.getServer();
-            if (server instanceof ServletServer) {
+            KumuluzServer ser = app.getServer();
+            if (ser instanceof ServletServer server) {
                 // print metadata (gets intercepted by parent process)
                 // print port
                 Integer port = EeConfig.getInstance().getServer().getHttp().getPort();
@@ -61,11 +61,11 @@ public class MainWrapper {
                 metadataSb.append(MSG_METADATA_PREFIX).append(port).append('\t');
 
                 // print information about the servlets
-                List<ServletWrapper> servlets = ((ServletServer) server).getRegisteredServlets();
+                List<ServletWrapper> servlets = server.getRegisteredServlets();
                 for (ServletWrapper s : servlets) {
                     metadataSb.append(s.getName()).append(':').append(s.getContextPath()).append('\t');
                 }
-                System.out.println(metadataSb.toString());
+                System.out.println(metadataSb);
             }
 
             System.out.println(MSG_SERVER_STARTED);

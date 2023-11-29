@@ -5,7 +5,7 @@
     <parent>
         <artifactId>kumuluzee-testing</artifactId>
         <groupId>com.kumuluz.ee.testing</groupId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,6 @@
     <description>Arquillian container adapter for the KumuluzEE microservice framework</description>
 
     <artifactId>kumuluzee-arquillian-container</artifactId>
-
 
     <dependencies>
         <dependency>
@@ -28,24 +27,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-test-spi</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet</artifactId>
+            <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-cdi</artifactId>
+            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-resource</artifactId>
+            <artifactId>arquillian-testenricher-resource-jakarta</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testenricher</groupId>
@@ -69,13 +60,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

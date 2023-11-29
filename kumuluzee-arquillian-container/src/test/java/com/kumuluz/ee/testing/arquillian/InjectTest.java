@@ -24,18 +24,18 @@ import com.kumuluz.ee.testing.arquillian.assets.SimpleBean;
 import com.kumuluz.ee.testing.arquillian.provider.SimplePojo;
 import com.kumuluz.ee.testing.arquillian.provider.SimpleResourceProvider;
 import com.kumuluz.ee.testing.arquillian.provider.SimpleResourceProviderRemoteExtension;
+import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.inject.Inject;
 import javax.naming.InitialContext;
 
 /**
@@ -44,7 +44,7 @@ import javax.naming.InitialContext;
  * @author Urban Malc
  * @since 1.0.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class InjectTest {
 
     @Deployment
@@ -68,19 +68,19 @@ public class InjectTest {
     private InitialContext initialContext;
 
     @Test
-    public void injectTest() {
-        Assert.assertNotNull(bean);
-        Assert.assertEquals("bean-hello", bean.sayHello());
+    void injectTest() {
+        Assertions.assertNotNull(bean);
+        Assertions.assertEquals("bean-hello", bean.sayHello());
     }
 
     @Test
-    public void arquillianResourceTest() {
-        Assert.assertNotNull(arquillianProvidedPojo);
-        Assert.assertEquals(42, arquillianProvidedPojo.getNumber());
+    void arquillianResourceTest() {
+        Assertions.assertNotNull(arquillianProvidedPojo);
+        Assertions.assertEquals(42, arquillianProvidedPojo.getNumber());
     }
 
     @Test
-    public void initialContextTest() {
-        Assert.assertNotNull(initialContext);
+    void initialContextTest() {
+        Assertions.assertNotNull(initialContext);
     }
 }

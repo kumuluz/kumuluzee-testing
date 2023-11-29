@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -45,7 +46,7 @@ import java.util.logging.Logger;
  */
 public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContainerConfig> {
 
-    private final Logger LOG; // initialized in constructor after logging init
+    private final Logger log; // initialized in constructor after logging init
 
     private static boolean loggingInitialized = false;
 
@@ -57,11 +58,11 @@ public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContaine
         }
     }
 
-    private Map<Archive, AbstractDeployment> deployments;
+    private final Map<Archive, AbstractDeployment> deployments;
 
     public KumuluzEEContainer() {
         initLogging();
-        this.LOG = Logger.getLogger(KumuluzEEContainer.class.getName());
+        this.log = Logger.getLogger(KumuluzEEContainer.class.getName());
         this.deployments = new HashMap<>();
     }
 
@@ -95,7 +96,7 @@ public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContaine
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 3.0");
+        return new ProtocolDescription("Servlet 5.0");
     }
 
     @Override
@@ -122,7 +123,7 @@ public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContaine
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
-        LOG.info("Deploying " + archive.getName());
+        log.info("Deploying " + archive.getName());
 
         KumuluzEEContainerConfig containerConfig = KumuluzEEContainerConfig.getInstance();
 
@@ -131,12 +132,12 @@ public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContaine
         switch (containerConfig.getPackaging()) {
             case KumuluzEEContainerConfig.PACKAGING_UBER_JAR:
                 Archive<?> uberJar = ArchiveUtils.generateUberJar(archive);
-                LOG.fine("UberJar: " + uberJar.toString(true));
+                log.log(Level.FINE, "UberJar: {0}", uberJar.toString(true));
                 deployment = new UberJarDeployment(uberJar);
                 break;
             case KumuluzEEContainerConfig.PACKAGING_EXPLODED:
                 Archive<?> exploded = ArchiveUtils.generateExploded(archive);
-                LOG.fine("Exploded structure: " + exploded.toString(true));
+                log.log(Level.FINE, "Exploded structure: {0}", exploded.toString(true));
                 deployment = new ExplodedDeployment(exploded);
                 break;
             default:
@@ -153,5 +154,4 @@ public class KumuluzEEContainer implements DeployableContainer<KumuluzEEContaine
         metaData.addContext(context);
         return metaData;
     }
-
 }

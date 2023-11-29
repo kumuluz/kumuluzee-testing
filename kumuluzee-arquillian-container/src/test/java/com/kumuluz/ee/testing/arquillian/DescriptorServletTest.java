@@ -23,11 +23,11 @@ package com.kumuluz.ee.testing.arquillian;
 import com.kumuluz.ee.testing.arquillian.assets.DescriptorServlet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.is;
@@ -38,7 +38,7 @@ import static org.hamcrest.Matchers.is;
  * @author Urban Malc
  * @since 1.0.0
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class DescriptorServletTest {
 
     @Deployment(testable = false)
@@ -50,7 +50,7 @@ public class DescriptorServletTest {
 
     @Test
     @RunAsClient
-    public void responseTest() {
+    void responseTest() {
         when().get("/test").then().statusCode(200).and().body(is("descriptor-hello"));
     }
 }
