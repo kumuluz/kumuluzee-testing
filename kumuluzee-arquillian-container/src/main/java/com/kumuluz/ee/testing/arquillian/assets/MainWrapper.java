@@ -51,8 +51,8 @@ public class MainWrapper {
 
             EeApplication app = new EeApplication();
 
-            KumuluzServer ser = app.getServer();
-            if (ser instanceof ServletServer server) {
+            KumuluzServer server = app.getServer();
+            if (server instanceof ServletServer) {
                 // print metadata (gets intercepted by parent process)
                 // print port
                 Integer port = EeConfig.getInstance().getServer().getHttp().getPort();
@@ -61,7 +61,7 @@ public class MainWrapper {
                 metadataSb.append(MSG_METADATA_PREFIX).append(port).append('\t');
 
                 // print information about the servlets
-                List<ServletWrapper> servlets = server.getRegisteredServlets();
+                List<ServletWrapper> servlets = ((ServletServer) server).getRegisteredServlets();
                 for (ServletWrapper s : servlets) {
                     metadataSb.append(s.getName()).append(':').append(s.getContextPath()).append('\t');
                 }
@@ -85,6 +85,7 @@ public class MainWrapper {
             return Base64.getEncoder().encodeToString(bo.toByteArray());
         } catch (IOException e1) {
             Exception newEx = new RuntimeException("IO error while serializing exception", e1);
+            //noinspection CallToPrintStackTrace
             newEx.printStackTrace();
             return serializeException(newEx);
         }

@@ -41,6 +41,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class ShouldThrowExceptionTest {
 
     @Deployment
+    @ShouldThrowException(DeploymentException.class)
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
                 .addClass(InvalidBean.class)
@@ -48,7 +49,6 @@ public class ShouldThrowExceptionTest {
     }
 
     @Test
-    @ShouldThrowException(DeploymentException.class)
     void ignored() {
         // NO-OP, see @ShouldThrowException above
     }

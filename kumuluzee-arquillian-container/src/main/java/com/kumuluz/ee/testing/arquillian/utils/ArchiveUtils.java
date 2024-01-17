@@ -46,7 +46,6 @@ public class ArchiveUtils {
     private static final Logger LOG = Logger.getLogger(ArchiveUtils.class.getName());
 
     private ArchiveUtils() {
-        throw new IllegalStateException("Utility class");
     }
 
     /**
@@ -191,14 +190,15 @@ public class ArchiveUtils {
      * @param a         Archive to fix
      * @param parentDir Directory to scan for {@link ArchiveAsset}s
      */
-    private static void fixArchiveAssets(Archive<?> a, String parentDir) {
+    private static void fixArchiveAssets(Archive<?> a, @SuppressWarnings("SameParameterValue") String parentDir) {
         Node n = a.get(parentDir);
         Archive<?> tmp = ShrinkWrap.create(JavaArchive.class);
         List<ArchivePath> pathsToDelete = new ArrayList<>();
         for (Node child : n.getChildren()) {
-            Asset asset = child.getAsset();
-            if (asset instanceof ArchiveAsset archiveAsset && child.getPath().get().endsWith(".jar")) {
+            Asset childAsset = child.getAsset();
+            if (childAsset instanceof ArchiveAsset && child.getPath().get().endsWith(".jar")) {
                 LOG.fine("Converting archive " + child.getPath().get() + " to ByteArrayAsset");
+                ArchiveAsset archiveAsset = (ArchiveAsset) childAsset;
                 ByteArrayAsset bas = new ByteArrayAsset(archiveAsset.openStream());
                 pathsToDelete.add(child.getPath());
                 tmp.add(bas, child.getPath());

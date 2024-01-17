@@ -48,7 +48,6 @@ public class RequiredLibraries {
     private static final Logger LOG = Logger.getLogger(RequiredLibraries.class.getName());
 
     private RequiredLibraries() {
-        throw new IllegalStateException("Utility class");
     }
 
     private static final String[] LIBS_DEFAULT = {
@@ -129,15 +128,21 @@ public class RequiredLibraries {
      * @return A list of dependencies.
      */
     private static List<String> getIncludedLibraries(String includeRequiredLibraries) {
-        return switch (includeRequiredLibraries) {
-            case KumuluzEEContainerConfig.INCLUDE_LIBS_FALSE, KumuluzEEContainerConfig.INCLUDE_LIBS_FROM_POM ->
-                    Collections.emptyList();
-            case KumuluzEEContainerConfig.INCLUDE_LIBS_DEFAULT -> Arrays.asList(LIBS_DEFAULT);
-            case KumuluzEEContainerConfig.INCLUDE_LIBS_MP1_0 -> Arrays.asList(LIBS_MP1_0);
-            case KumuluzEEContainerConfig.INCLUDE_LIBS_MP1_1 -> Arrays.asList(LIBS_MP1_1);
-            case KumuluzEEContainerConfig.INCLUDE_LIBS_MP1_2 -> Arrays.asList(LIBS_MP1_2);
-            default -> throw new RuntimeException("Could not determine includeRequiredLibraries parameter: " +
-                    includeRequiredLibraries);
-        };
+        switch (includeRequiredLibraries) {
+            case KumuluzEEContainerConfig.INCLUDE_LIBS_FALSE:
+            case KumuluzEEContainerConfig.INCLUDE_LIBS_FROM_POM:
+                return Collections.emptyList();
+            case KumuluzEEContainerConfig.INCLUDE_LIBS_DEFAULT:
+                return Arrays.asList(LIBS_DEFAULT);
+            case KumuluzEEContainerConfig.INCLUDE_LIBS_MP1_0:
+                return Arrays.asList(LIBS_MP1_0);
+            case KumuluzEEContainerConfig.INCLUDE_LIBS_MP1_1:
+                return Arrays.asList(LIBS_MP1_1);
+            case KumuluzEEContainerConfig.INCLUDE_LIBS_MP1_2:
+                return Arrays.asList(LIBS_MP1_2);
+            default:
+                throw new RuntimeException("Could not determine includeRequiredLibraries parameter: " +
+                        includeRequiredLibraries);
+        }
     }
 }

@@ -37,15 +37,17 @@ import java.util.concurrent.CountDownLatch;
  */
 public class OutputProcessor implements Runnable, Closeable {
 
-    private InputStream stream;
-    private CountDownLatch latch;
+    private final InputStream stream;
+    private final PrintStream forwardTo;
+    private final CountDownLatch latch;
 
     private HTTPContext httpContext;
     private Throwable processingError;
     private Throwable deploymentError;
 
-    public OutputProcessor(InputStream stream, CountDownLatch latch) {
+    public OutputProcessor(InputStream stream, PrintStream forwardTo, CountDownLatch latch) {
         this.stream = stream;
+        this.forwardTo = forwardTo;
         this.latch = latch;
     }
 
@@ -71,7 +73,7 @@ public class OutputProcessor implements Runnable, Closeable {
                 if (line.startsWith(MainWrapper.MSG_PREFIX)) {
                     processMessage(line.trim());
                 } else {
-                    System.out.println(line);
+                    this.forwardTo.println(line);
                 }
             }
         } catch (IOException | ParsingException e) {

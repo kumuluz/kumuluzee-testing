@@ -49,7 +49,7 @@ public abstract class AbstractDeployment {
 
     private static final Logger LOG = Logger.getLogger(AbstractDeployment.class.getName());
 
-    private KumuluzEEContainerConfig containerConfig;
+    private final KumuluzEEContainerConfig containerConfig;
 
     protected boolean shouldDelete;
 
@@ -122,8 +122,8 @@ public abstract class AbstractDeployment {
 
             CountDownLatch serverReady = new CountDownLatch(1);
 
-            OutputProcessor stdoutProcessor = new OutputProcessor(process.getInputStream(), serverReady);
-            OutputProcessor stderrProcessor = new OutputProcessor(process.getErrorStream(), serverReady);
+            OutputProcessor stdoutProcessor = new OutputProcessor(process.getInputStream(), System.out, serverReady);
+            OutputProcessor stderrProcessor = new OutputProcessor(process.getErrorStream(), System.err, serverReady);
             Thread outThread = new Thread(stdoutProcessor);
             Thread errThread = new Thread(stderrProcessor);
 
@@ -157,7 +157,7 @@ public abstract class AbstractDeployment {
                 throw new DeploymentException("Could not retrieve HTTP context from server");
             }
 
-            LOG.fine("Deployment started, context: " + context.toString());
+            LOG.fine("Deployment started, context: " + context);
 
             return context;
         } catch (IOException e) {

@@ -35,9 +35,9 @@ import jakarta.servlet.annotation.WebListener;
 @WebListener
 public class ServletWebListener implements ServletContextListener {
 
-    private static final String ARQUILLIAN_SERVLET_NAME = "ArquillianServletRunner";
-    private static final String ARQUILLIAN_SERVLET_MAPPING = "/ArquillianServletRunner";
-    private static final String ARQUILLIAN_SERVLET_CLASS_NAME = "org.jboss.arquillian.protocol.servlet.runner." +
+    private static final String ARQUILLIAN_SERVLET_NAME = "ArquillianServletRunnerEE9";
+    private static final String ARQUILLIAN_SERVLET_MAPPING = "/ArquillianServletRunnerEE9";
+    private static final String ARQUILLIAN_SERVLET_CLASS_NAME = "org.jboss.arquillian.protocol.servlet5.runner." +
             "ServletTestRunner";
 
     @Override
@@ -55,9 +55,8 @@ public class ServletWebListener implements ServletContextListener {
         // NO-OP
     }
 
-    private boolean isClassPresent(String classname) {
+    private boolean isClassPresent(@SuppressWarnings("SameParameterValue") String classname) {
         try {
-            System.out.println("Checking for class: " + classname);
             Class.forName(classname);
             return true;
         } catch (ClassNotFoundException e) {
